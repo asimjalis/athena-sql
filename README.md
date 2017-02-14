@@ -40,7 +40,7 @@ Install Athena driver into local maven repo.
 
 ### Configure Athena-SQL
 
-Create S3 staging directory.
+Create S3 staging directory. Replace this bucket name with your own unique bucket name.
 
     aws s3 mb s3://asimj-athena-s3-staging-dir
 
