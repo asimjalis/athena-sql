@@ -120,6 +120,6 @@ Replace this bucket name with your own unique bucket name.
 
     athena-sql "DROP TABLE sales"
 
-## Troubleshooting Tips
+## Troubleshooting
 
 In `conf/log4j.properties` replace `OFF` with `ERROR` or `WARN` to get full stack trace.
