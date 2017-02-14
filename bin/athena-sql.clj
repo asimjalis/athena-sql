@@ -133,24 +133,16 @@
 (defn seq->edn  [s] (->> s cprint))
 (defn seq->csv  "Prints CSV data without header"
   [s] (->> s (map vals) csv->out))
-(defn seq->csv2 "Print CSV header then data"
-  [s]   
-  ; Head
-  (->> s first keys (map name) vector csv->out)
-  ; Data
-  (->> s (map vals) csv->out))
 
 (defn sql->json [sql] (->> sql sql->seq seq->json))
 (defn sql->edn  [sql] (->> sql sql->seq seq->edn))
 (defn sql->csv  [sql] (->> sql sql->seq seq->csv))
-(defn sql->csv2 [sql] (->> sql sql->seq seq->csv2))
 
 ; [Test]
 
 (defn test-all []
   (->> "SELECT * FROM sampledb.elb_logs LIMIT 2" sql->json)
   (->> "SELECT * FROM sampledb.elb_logs LIMIT 2" sql->csv)
-  (->> "SELECT * FROM sampledb.elb_logs LIMIT 2" sql->csv2)
   (->> "SHOW TABLES IN DEFAULT" sql->edn)
   (->> "SELECT COUNT(*) AS record_count FROM elb_logs" sql->edn)
   (->> "SELECT * FROM sampledb.elb_logs LIMIT 2" sql->edn))
@@ -161,9 +153,7 @@
   (cond 
     (= output :edn)  (-> sql sql->edn)
     (= output :json) (-> sql sql->json)
-    (= output :csv)  (-> sql sql->csv)
-    (= output :csv2) (-> sql sql->csv2)
-    :else            (error "Unknown output format " (name output))))
+    :else            (-> sql sql->csv)))
 
 (defn -main [& args]
   (try 

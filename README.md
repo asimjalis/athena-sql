@@ -2,7 +2,7 @@
 
 ## What
 
-Command line tool to query AWS Athena using SQL from the command line.
+Command line tool to query AWS Athena using SQL. 
 
 ## Steps
 
@@ -12,7 +12,7 @@ Command line tool to query AWS Athena using SQL from the command line.
     
 ### Configure Credentials
 
-Configure `~/.aws/credentials` to save your AWS Access Key ID and Secret Access Key.
+Configure `~/.aws/credentials` with your AWS Access Key ID and Secret Access Key.
 
 ### Install Athena Driver
 
@@ -20,6 +20,8 @@ Download Athena driver.
 
     aws s3 cp s3://athena-downloads/drivers/AthenaJDBC41-1.0.0.jar .
     
+Make sure you have maven installed. 
+
 Install Athena driver into local Maven repo.
 
     mvn install:install-file \
@@ -28,29 +30,41 @@ Install Athena driver into local Maven repo.
       -DartifactId=athena-jdbc \
       -Dversion=1.0.0 \
       -Dpackaging=jar
- 
-### Download 
+
+### Download Athena-SQL
 
     git clone https://github.com/asimjalis/athena-sql
     cd athena-sql
     export ATHENA_HOME=$(pwd)
+    export PATH=$PATH:$ATHENA_HOME/bin
     cd
 
-### Configure
+### Configure Athena-SQL
 
-Edit `$ATHENA_HOME/conf/config.edn` to point it to an S3 path that you have access to. 
+Create S3 staging directory.
 
-Choose the output format from CSV, JSON, or EDN. 
+    aws s3 mb s3://asimj-athena-s3-staging-dir
+
+Edit `config.edn` to specify an S3 staging directory that you have write access to.
+
+    {:default 
+     {:s3-staging-dir "s3://asimj-athena-s3-staging-dir"
+      :log-path "/tmp/athena.log"
+      :output :csv } }
+
+
+You can configure the output format to be CSV, JSON, or EDN. 
+
+The default is CSV.
 
 ### Run
 
-    $ATHENA_HOME/athena-sql "DESCRIBE DATABASES"
-    $ATHENA_HOME/athena-sql "DESCRIBE TABLES IN default"
-    $ATHENA_HOME/athena-sql "SELECT * FROM mytable LIMIT 2"
+    athena-sql "DESCRIBE DATABASES"
+    athena-sql "DESCRIBE TABLES IN default"
 
-## Example
+## Demo
 
-## Create Sales Data
+### Create Sales Data
 
     #ID,Date,Store,State,Product,Amount
     cat << END > sales.csv
@@ -64,6 +78,8 @@ Choose the output format from CSV, JSON, or EDN.
 
 ### Make Bucket
 
+Replace this bucket name with your own unique bucket name.
+
     aws s3 mb s3://asimj-athena-example
 
 ### Stage Data 
@@ -73,10 +89,6 @@ Choose the output format from CSV, JSON, or EDN.
 ### Verify Data
 
     aws s3 cp s3://asimj-athena-example/data/sales.csv -
-
-### Add Athena Tool To Path
-
-    export PATH=$PATH:$ATHENA_HOME/bin
 
 ### Create Table
 
@@ -101,7 +113,7 @@ Choose the output format from CSV, JSON, or EDN.
 
     athena-sql "
       SELECT state, COUNT(*) AS count 
-      FROM sales GROUP BY state ORDER BY state
+      FROM sales GROUP BY state ORDER BY count desc
     "
     
 ### Drop Table
@@ -110,5 +122,4 @@ Choose the output format from CSV, JSON, or EDN.
 
 ## Troubleshooting Tips
 
-In `conf/log4j.properties` replace `OFF` with `ERROR` or `WARN` to get
-full stack trace.
+In `conf/log4j.properties` replace `OFF` with `ERROR` or `WARN` to get full stack trace.

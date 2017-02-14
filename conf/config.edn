@@ -1,19 +1,15 @@
 {:default 
  {
   ; S3 staging directory (required)
-  :s3-staging-dir "s3://another-bucket-aj"
+  :s3-staging-dir "s3://asimj-athena-s3-staging-dir"
 
   ; Local log file (optional)
   :log-path "/tmp/athena.log"
 
   ; Output format 
   ;   :csv    prints JSON output
-  ;   :csv2   prints CSV output in CSV without headers
   ;   :json   prints CSV output with headers
   ;   :edn    prints colored EDN output (used natively in Clojure)
   :output :csv
   } 
  }
-
-
-
