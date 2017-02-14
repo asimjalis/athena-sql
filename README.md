@@ -37,7 +37,6 @@ Install Athena driver into local maven repo.
     cd athena-sql
     export ATHENA_HOME=$(pwd)
     export PATH=$PATH:$ATHENA_HOME/bin
-    cd
 
 ### Configure Athena-SQL
 
