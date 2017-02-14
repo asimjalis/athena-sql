@@ -22,7 +22,7 @@ Download Athena driver.
     
 Make sure you have maven installed. 
 
-Install Athena driver into local Maven repo.
+Install Athena driver into local maven repo.
 
     mvn install:install-file \
       -Dfile=AthenaJDBC41-1.0.0.jar \
