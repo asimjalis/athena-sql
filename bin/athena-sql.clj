@@ -85,6 +85,7 @@
 
 (defn make-stmt [config aws-info]
   (let [s3-staging-dir (-> config :s3-staging-dir)
+        log-path (-> config :log-path)
         aws-region (-> aws-info :aws-region)
         aws-access-key-id (-> aws-info :aws-access-key-id)
         aws-secret-key (-> aws-info :aws-secret-key)
@@ -93,7 +94,7 @@
         athena-uri (str "jdbc:awsathena://" athena-host ":" athena-port)
         athena-info (doto (new Properties)
                       (.put "s3_staging_dir" s3-staging-dir)
-                      (.put "log_path" "/tmp/athena.log")
+                      (.put "log_path" log-path)
                       (.put "user" aws-access-key-id)
                       (.put "password" aws-secret-key))
         athena-conn (DriverManager/getConnection 
@@ -103,12 +104,6 @@
     athena-stmt))
 
 (def ^:dynamic *athena-stmt*)
-
-(defn sql-is-create [sql]
-  (-> sql 
-      (.replaceAll "\n" " ") 
-      (.toLowerCase) 
-      (.matches " *(create|drop|alter|rename) .*")))
 
 (require 'clojure.java.jdbc)
 
