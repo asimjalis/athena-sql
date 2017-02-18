@@ -9,17 +9,18 @@ Command line tool to query AWS Athena using SQL.
 ### Install AWSCLI
 
     pip install --upgrade awscli
-    
+
 ### Configure Credentials
 
-Configure `~/.aws/credentials` with your AWS Access Key ID and Secret Access Key.
+Configure `~/.aws/credentials` with your AWS Access Key ID and Secret
+Access Key.
 
 ### Install Athena Driver
 
 Download Athena driver.
 
     aws s3 cp s3://athena-downloads/drivers/AthenaJDBC41-1.0.0.jar .
-    
+
 Make sure you have maven installed. 
 
 Install Athena driver into local maven repo.
@@ -40,11 +41,13 @@ Install Athena driver into local maven repo.
 
 ### Configure Athena-SQL
 
-Create S3 staging directory. Replace this bucket name with your own unique bucket name.
+Create S3 staging directory. Replace this bucket name with your own
+unique bucket name.
 
     aws s3 mb s3://asimj-athena-s3-staging-dir
 
-Edit `config.edn` to specify an S3 staging directory that you have write access to.
+Edit `config.edn` to specify an S3 staging directory that you have
+write access to.
 
     {:default 
      {:s3-staging-dir "s3://asimj-athena-s3-staging-dir"
@@ -104,21 +107,29 @@ Replace this bucket name with your own unique bucket name.
       STORED AS TEXTFILE
       LOCATION 's3://asimj-athena-example/data/'
     "
-
+    
     athena-sql "SHOW TABLES IN DEFAULT"
     athena-sql "SELECT * FROM SALES LIMIT 10"
 
-### Query
+### States With Highest Transaction Count
 
     athena-sql "
       SELECT state, COUNT(*) AS count 
-      FROM sales GROUP BY state ORDER BY count desc
+      FROM sales GROUP BY state ORDER BY count DESC
     "
-    
+
+### States With Highest Revenue
+
+    athena-sql "
+      SELECT state, SUM(amount) AS revenue
+      FROM sales GROUP BY state ORDER BY revenue DESC
+    "
+
 ### Drop Table
 
     athena-sql "DROP TABLE sales"
 
 ## Troubleshooting
 
-In `conf/log4j.properties` replace `OFF` with `ERROR` or `WARN` to get full stack trace.
+In `conf/log4j.properties` replace `OFF` with `ERROR` or `WARN` to get
+full stack trace.
